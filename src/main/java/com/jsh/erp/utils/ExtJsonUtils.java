@@ -15,13 +15,14 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @author jishenghua qq752718920  2018-10-7 15:26:27
+ * @author 暗香
  */
 public class ExtJsonUtils {
     private static class NPFloatCodec extends FloatCodec {
-        public void write(JSONSerializer serializer, Object object, Object fieldName, Type fieldType) throws IOException {
-            SerializeWriter out = serializer.getWriter();
 
+        @Override
+        public void write(JSONSerializer serializer, Object object, Object fieldName, Type fieldType) {
+            SerializeWriter out = serializer.getWriter();
             if (object == null) {
                 if (serializer.isEnabled(SerializerFeature.WriteNullNumberAsZero)) {
                     out.write('0');
@@ -30,9 +31,7 @@ public class ExtJsonUtils {
                 }
                 return;
             }
-
             float floatValue = (Float) object;
-
             if (Float.isNaN(floatValue)) {
                 out.writeNull();
             } else if (Float.isInfinite(floatValue)) {
@@ -49,9 +48,10 @@ public class ExtJsonUtils {
     }
 
     private static class NPDoubleSerializer extends DoubleSerializer {
-        public void write(JSONSerializer serializer, Object object, Object fieldName, Type fieldType) throws IOException {
-            SerializeWriter out = serializer.getWriter();
 
+        @Override
+        public void write(JSONSerializer serializer, Object object, Object fieldName, Type fieldType) {
+            SerializeWriter out = serializer.getWriter();
             if (object == null) {
                 if (!serializer.isEnabled(SerializerFeature.WriteNullNumberAsZero)) {
                     out.writeNull();

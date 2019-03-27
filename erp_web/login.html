@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ERP系统</title>
+    <title>仓库管理系统</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
     <meta name="referrer" content="Webkit">
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"/>
     <link type="text/css" rel="stylesheet" href="/css/css.css"/>
@@ -28,16 +28,10 @@
             <p id="tip_userpwd" style="display: none">密码不能为空</p>
             <input type="button" value=" " id="btn_login"/>
         </div>
-        <p id="copyright">
-            Copyright © 2017-2020 季圣华(jishenghua)
-            <a style="color:#00458a;" href="https://gitee.com/jishenghua/JSH_ERP" target="_blank">华夏ERP_v2.0</a>
-        </p>
     </div>
 </form>
 <script type="text/javascript">
-    //初始化界面
     $(function () {
-        //进入页面聚焦在username输入框,方便 用户输入
         $("#user_name").focus();
         browserFit();
     });
@@ -50,7 +44,6 @@
             $("#user_vcodepwd").empty().append("密&nbsp;&nbsp;&nbsp;&nbsp;码：");
     }
 
-    //初始化键盘enter事件
     $(document).keydown(function (event) {
         //兼容 IE和firefox 事件
         var e = window.event || event;
@@ -71,7 +64,7 @@
     function checkUserInput() {
         var username = $.trim($('#user_name').val());
         var password = $.trim($('#user_pwd').val());
-        if (null == username || 0 == username.length) {
+        if (null == username || 0 === username.length) {
             $("#user_name").val("").focus();
             $("#tip_userpwd").hide();
             $("#tip_username").empty().append('<span class="error_input">用户名不能为空</span>').show();
@@ -98,12 +91,11 @@
                 dataType: "json",
                 data: ({
                     loginame: username,
-                    password:  hex_md5(password)
+                    password: hex_md5(password)
                 }),
                 success: function (res) {
-                    if(res) {
+                    if (res) {
                         var loginInfoTip = res.data.msgTip;
-                        //用户名不存在，清空输入框并定位到用户名输入框
                         if (loginInfoTip.indexOf("user is not exist") != -1) {
                             $("#user_pwd").val("");
                             $("#user_name").val("").focus();
@@ -130,8 +122,8 @@
                                 url: "/user/getUserSession",
                                 dataType: "json",
                                 success: function (res) {
-                                    if(res && res.code === 200) {
-                                        if(res.data.user) {
+                                    if (res && res.code === 200) {
+                                        if (res.data.user) {
                                             console.log("user");
                                             var user = res.data.user;
                                             sessionStorage.setItem("userId", user.id);

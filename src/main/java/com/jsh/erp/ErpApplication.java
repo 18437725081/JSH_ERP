@@ -17,7 +17,7 @@ import javax.servlet.http.Cookie;
 @MapperScan(basePackages = {"com.jsh.erp.datasource.mappers"})
 @ServletComponentScan
 @EnableScheduling
-public class ErpApplication{
+public class ErpApplication {
     public static void main(String[] args) {
         SpringApplication.run(ErpApplication.class, args);
     }

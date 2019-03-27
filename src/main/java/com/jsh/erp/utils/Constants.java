@@ -1,9 +1,7 @@
 package com.jsh.erp.utils;
 
-import java.util.UUID;
-
 /**
- * by jishenghua qq-752718920 2018-10-7 12:01:36
+ * @author 暗香
  */
 public class Constants {
 
@@ -14,13 +12,7 @@ public class Constants {
     public final static String FILTER = "filter";
     public final static String SPLIT = ",";
     public final static String SEARCH = "search";
-    public final static String DEVICE_ID = "deviceId";
     public final static String OFFSET = "offset";
-    public final static String ROWS = "rows";
-    public final static String IS_RECURSION = "isRecursion";
-    public final static String IS_RECURSION_VALUE = "1";
-    public final static String IS_QUERYBYNODEID = "isquerybyid";
-    public final static String IS_QUERYBYNODEID_VALUE = "1";
 
     //级联类别
     public final static String TYPE = "type";
@@ -29,6 +21,6 @@ public class Constants {
     public final static String TEAM = "team";
 
     //增加了角色等级常量
-    public final static String LEVEL="level";
+    public final static String LEVEL = "level";
 
 }

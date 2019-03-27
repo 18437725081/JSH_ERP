@@ -7,6 +7,7 @@ import com.jsh.erp.datasource.vo.AccountVo4InOutList;
 import com.jsh.erp.service.account.AccountService;
 import com.jsh.erp.utils.BaseResponseInfo;
 import com.jsh.erp.utils.ErpInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -21,24 +22,24 @@ import java.util.Map;
 import static com.jsh.erp.utils.ResponseJsonUtil.returnJson;
 
 /**
- * @author jishenghua 75271*8920
+ * @author 暗香
  */
 @RestController
 @RequestMapping(value = "/account")
+@Slf4j
 public class AccountController {
-    private Logger logger = LoggerFactory.getLogger(AccountController.class);
 
     @Resource
     private AccountService accountService;
 
     /**
      * 查找结算账户信息-下拉框
-     * @param request
+     *
      * @return
      */
     @GetMapping(value = "/findBySelect")
-    public String findBySelect(HttpServletRequest request) {
-        String res = null;
+    public String findBySelect() {
+        String res;
         try {
             List<Account> dataList = accountService.findBySelect();
             //存放数据json数组
@@ -53,7 +54,7 @@ public class AccountController {
                 }
             }
             res = dataArray.toJSONString();
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             res = "获取数据失败";
         }
@@ -62,20 +63,20 @@ public class AccountController {
 
     /**
      * 获取所有结算账户
-     * @param request
+     *
      * @return
      */
     @GetMapping(value = "/getAccount")
-    public BaseResponseInfo getAccount(HttpServletRequest request) {
+    public BaseResponseInfo getAccount() {
         BaseResponseInfo res = new BaseResponseInfo();
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<String, Object>(2);
         try {
             List<Account> accountList = accountService.getAccount();
             map.put("accountList", accountList);
             res.code = 200;
             res.data = map;
-        } catch(Exception e){
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.error("获取所有结算账户信息" + e.getMessage());
             res.code = 500;
             res.data = "获取数据失败";
         }
@@ -84,6 +85,7 @@ public class AccountController {
 
     /**
      * 账户流水信息
+     *
      * @param currentPage
      * @param pageSize
      * @param accountId
@@ -100,7 +102,7 @@ public class AccountController {
         BaseResponseInfo res = new BaseResponseInfo();
         Map<String, Object> map = new HashMap<String, Object>();
         try {
-            List<AccountVo4InOutList> dataList = accountService.findAccountInOutList(accountId, (currentPage-1)*pageSize, pageSize);
+            List<AccountVo4InOutList> dataList = accountService.findAccountInOutList(accountId, (currentPage - 1) * pageSize, pageSize);
             int total = accountService.findAccountInOutListCount(accountId);
             map.put("total", total);
             //存放数据json数组
@@ -117,7 +119,7 @@ public class AccountController {
             map.put("rows", dataArray);
             res.code = 200;
             res.data = map;
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             res.code = 500;
             res.data = "获取数据失败";
@@ -128,11 +130,11 @@ public class AccountController {
 
     @PostMapping(value = "/updateAmountIsDefault")
     public String updateAmountIsDefault(@RequestParam("isDefault") Boolean isDefault,
-                                 @RequestParam("accountId") Long accountId,
-                                 HttpServletRequest request) {
+                                        @RequestParam("accountId") Long accountId,
+                                        HttpServletRequest request) {
         Map<String, Object> objectMap = new HashMap<String, Object>();
         int res = accountService.updateAmountIsDefault(isDefault, accountId);
-        if(res > 0) {
+        if (res > 0) {
             return returnJson(objectMap, ErpInfo.OK.name, ErpInfo.OK.code);
         } else {
             return returnJson(objectMap, ErpInfo.ERROR.name, ErpInfo.ERROR.code);

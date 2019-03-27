@@ -13,6 +13,7 @@ import com.jsh.erp.service.material.MaterialService;
 import com.jsh.erp.utils.*;
 import jxl.Sheet;
 import jxl.Workbook;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -28,12 +29,12 @@ import java.util.*;
 import static com.jsh.erp.utils.ResponseJsonUtil.returnJson;
 
 /**
- * @author ji|sheng|hua 华夏ERP
+ * @author 暗香
  */
 @RestController
 @RequestMapping(value = "/material")
+@Slf4j
 public class MaterialController {
-    private Logger logger = LoggerFactory.getLogger(MaterialController.class);
 
     @Resource
     private MaterialService materialService;
@@ -43,12 +44,11 @@ public class MaterialController {
                                @RequestParam("model") String model, @RequestParam("color") String color,
                                @RequestParam("standard") String standard, @RequestParam("mfrs") String mfrs,
                                @RequestParam("otherField1") String otherField1, @RequestParam("otherField2") String otherField2,
-                               @RequestParam("otherField3") String otherField3, @RequestParam("unit") String unit,@RequestParam("unitId") Long unitId,
-                               HttpServletRequest request) {
-        Map<String, Object> objectMap = new HashMap<String, Object>();
+                               @RequestParam("otherField3") String otherField3, @RequestParam("unit") String unit, @RequestParam("unitId") Long unitId) {
+        Map<String, Object> objectMap = new HashMap<String, Object>(2);
         int exist = materialService.checkIsExist(id, name, model, color, standard, mfrs,
                 otherField1, otherField2, otherField3, unit, unitId);
-        if(exist > 0) {
+        if (exist > 0) {
             objectMap.put("status", true);
         } else {
             objectMap.put("status", false);
@@ -58,6 +58,7 @@ public class MaterialController {
 
     /**
      * 批量设置状态-启用或者禁用
+     *
      * @param enabled
      * @param materialIDs
      * @param request
@@ -69,7 +70,7 @@ public class MaterialController {
                                  HttpServletRequest request) {
         Map<String, Object> objectMap = new HashMap<String, Object>();
         int res = materialService.batchSetEnable(enabled, materialIDs);
-        if(res > 0) {
+        if (res > 0) {
             return returnJson(objectMap, ErpInfo.OK.name, ErpInfo.OK.code);
         } else {
             return returnJson(objectMap, ErpInfo.ERROR.name, ErpInfo.ERROR.code);
@@ -78,6 +79,7 @@ public class MaterialController {
 
     /**
      * 根据id来查询商品名称
+     *
      * @param id
      * @param request
      * @return
@@ -89,7 +91,7 @@ public class MaterialController {
             List<MaterialVo4Unit> list = materialService.findById(id);
             res.code = 200;
             res.data = list;
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             res.code = 500;
             res.data = "获取数据失败";
@@ -99,6 +101,7 @@ public class MaterialController {
 
     /**
      * 查找商品信息-下拉框
+     *
      * @param mpList
      * @param request
      * @return
@@ -157,6 +160,7 @@ public class MaterialController {
 
     /**
      * 查找商品信息-统计排序
+     *
      * @param request
      * @return
      */
@@ -178,7 +182,7 @@ public class MaterialController {
             map.put("mIds", mId);
             res.code = 200;
             res.data = map;
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             res.code = 500;
             res.data = "获取数据失败";
@@ -188,6 +192,7 @@ public class MaterialController {
 
     /**
      * 生成excel表格
+     *
      * @param name
      * @param model
      * @param categoryId
@@ -216,7 +221,7 @@ public class MaterialController {
                     objs[0] = m.getName();
                     objs[1] = m.getCategoryName();
                     objs[2] = m.getModel();
-                    objs[3] = m.getSafetystock() == null? "" : m.getSafetystock().toString();
+                    objs[3] = m.getSafetystock() == null ? "" : m.getSafetystock().toString();
                     objs[4] = m.getUnit();
                     objs[5] = m.getRetailprice() == null ? "" : m.getRetailprice().toString();
                     objs[6] = m.getLowprice() == null ? "" : m.getLowprice().toString();
@@ -243,6 +248,7 @@ public class MaterialController {
 
     /**
      * excel表格导入
+     *
      * @param materialFile
      * @param request
      * @param response
@@ -250,7 +256,7 @@ public class MaterialController {
      */
     @PostMapping(value = "/importExcel")
     public void importExcel(MultipartFile materialFile,
-                            HttpServletRequest request, HttpServletResponse response) throws Exception{
+                            HttpServletRequest request, HttpServletResponse response) throws Exception {
         BaseResponseInfo info = new BaseResponseInfo();
         Map<String, Object> data = new HashMap<String, Object>();
         String message = "成功";
@@ -287,7 +293,7 @@ public class MaterialController {
                 m.setPresetpricetwo(parseBigDecimalEx(presetpricetwo));
                 m.setRemark(ExcelUtils.getContent(src, i, 9));
                 String enabled = ExcelUtils.getContent(src, i, 10);
-                m.setEnabled(enabled.equals("启用")? true: false);
+                m.setEnabled(enabled.equals("启用") ? true : false);
                 mList.add(m);
             }
             info = materialService.importExcel(mList);
@@ -301,23 +307,24 @@ public class MaterialController {
         response.sendRedirect("../pages/materials/material.html");
     }
 
-    public BigDecimal parseBigDecimalEx(String str){
-        if(!StringUtil.isEmpty(str)) {
-            return  new BigDecimal(str);
+    public BigDecimal parseBigDecimalEx(String str) {
+        if (!StringUtil.isEmpty(str)) {
+            return new BigDecimal(str);
         } else {
             return null;
         }
     }
+
     @RequestMapping(value = "/getMaterialEnableSerialNumberList")
     public String getMaterialEnableSerialNumberList(@RequestParam(value = Constants.PAGE_SIZE, required = false) Integer pageSize,
-                               @RequestParam(value = Constants.CURRENT_PAGE, required = false) Integer currentPage,
-                               @RequestParam(value = Constants.SEARCH, required = false) String search) {
+                                                    @RequestParam(value = Constants.CURRENT_PAGE, required = false) Integer currentPage,
+                                                    @RequestParam(value = Constants.SEARCH, required = false) String search) {
         Map<String, Object> parameterMap = new HashMap<String, Object>();
         //查询参数
-        JSONObject obj=JSON.parseObject(search);
-        Set<String> key= obj.keySet();
-        for(String keyEach: key){
-            parameterMap.put(keyEach,obj.getString(keyEach));
+        JSONObject obj = JSON.parseObject(search);
+        Set<String> key = obj.keySet();
+        for (String keyEach : key) {
+            parameterMap.put(keyEach, obj.getString(keyEach));
         }
         PageQueryInfo queryInfo = new PageQueryInfo();
         Map<String, Object> objectMap = new HashMap<String, Object>();
@@ -327,7 +334,7 @@ public class MaterialController {
         if (currentPage == null || currentPage <= 0) {
             currentPage = BusinessConstants.DEFAULT_PAGINATION_PAGE_NUMBER;
         }
-        PageHelper.startPage(currentPage,pageSize,true);
+        PageHelper.startPage(currentPage, pageSize, true);
         List<Material> list = materialService.getMaterialEnableSerialNumberList(parameterMap);
         //获取分页查询后的数据
         PageInfo<Material> pageInfo = new PageInfo<>(list);

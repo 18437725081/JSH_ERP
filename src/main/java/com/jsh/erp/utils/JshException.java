@@ -1,11 +1,7 @@
 package com.jsh.erp.utils;
 
 /**
- * @author jishenghua
- * @title: 平台异常基类
- * @description: 用于包装一些异常信息，打印日志等服务
- * @qq 7 5 2 7 1 8 9 2 0
- * @since: 2014-02-24
+ * @author 暗香
  */
 @SuppressWarnings("serial")
 public class JshException extends Exception {

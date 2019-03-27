@@ -1,6 +1,5 @@
 package com.jsh.erp.filter;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.*;
@@ -11,12 +10,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * 过滤器
+ *
+ * @author 暗香
+ */
 @WebFilter(filterName = "LogCostFilter", urlPatterns = {"/*"},
         initParams = {@WebInitParam(name = "ignoredUrl", value = ".css#.js#.jpg#.png#.gif#.ico"),
-                      @WebInitParam(name = "filterPath", value = "/user/login")})
+                @WebInitParam(name = "filterPath", value = "/user/login")})
 public class LogCostFilter implements Filter {
 
     private static final String FILTER_PATH = "filterPath";
@@ -27,7 +32,7 @@ public class LogCostFilter implements Filter {
     private String[] ignoredUrls;
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
         String filterPath = filterConfig.getInitParameter(FILTER_PATH);
         if (!StringUtils.isEmpty(filterPath)) {
             allowUrls = filterPath.contains("#") ? filterPath.split("#") : new String[]{filterPath};
@@ -41,6 +46,7 @@ public class LogCostFilter implements Filter {
             }
         }
     }
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
@@ -49,7 +55,8 @@ public class LogCostFilter implements Filter {
         String requestUrl = servletRequest.getRequestURI();
         //具体，比如：处理若用户未登录，则跳转到登录页
         Object userInfo = servletRequest.getSession().getAttribute("user");
-        if(userInfo!=null) { //如果已登录，不阻止
+        //如果已登录，不阻止
+        if (!Objects.isNull(userInfo)) {
             chain.doFilter(request, response);
             return;
         }
@@ -85,6 +92,7 @@ public class LogCostFilter implements Filter {
         }
         return false;
     }
+
     @Override
     public void destroy() {
 

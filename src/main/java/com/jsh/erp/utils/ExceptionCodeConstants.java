@@ -1,5 +1,8 @@
 package com.jsh.erp.utils;
 
+/**
+ * @author 暗香
+ */
 public interface ExceptionCodeConstants {
     /**
      * 用户错误码定义

@@ -8,7 +8,7 @@
 	<packaging>jar</packaging>
 
 	<name>jshERP</name>
-	<description>华夏ERP</description>
+	<description>WMS</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -55,7 +55,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.28</version>
+			<version>5.1.46</version>
 		</dependency>
 		<!--http-->
 		<dependency>
@@ -110,7 +110,7 @@
 		</dependency>
 	</dependencies>
 
-	<repositories>
+	<!--<repositories>
 		<repository>
 			<id>spring-snapshots</id>
 			<name>Spring Snapshots</name>
@@ -127,9 +127,9 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-	</repositories>
+	</repositories>-->
 
-	<pluginRepositories>
+	<!--<pluginRepositories>
 		<pluginRepository>
 			<id>spring-snapshots</id>
 			<name>Spring Snapshots</name>
@@ -146,7 +146,7 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</pluginRepository>
-	</pluginRepositories>
+	</pluginRepositories>-->
 
 	<build>
 		<finalName>jshERP2.0</finalName>

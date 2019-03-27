@@ -31,7 +31,7 @@ import java.util.*;
 import static com.jsh.erp.utils.ResponseJsonUtil.returnJson;
 
 /**
- * @author ji_sheng_hua 华夏erp
+ * @author 暗香
  */
 @RestController
 @RequestMapping(value = "/user")
@@ -40,19 +40,17 @@ public class UserController {
 
     @Value("${mybatis-plus.status}")
     private String mybatisPlusStatus;
-
     @Resource
     private UserService userService;
-
     private static String message = "成功";
 
     @PostMapping(value = "/login")
     public BaseResponseInfo login(@RequestParam(value = "loginame", required = false) String loginame,
-                        @RequestParam(value = "password", required = false) String password,
-                        HttpServletRequest request) {
+                                  @RequestParam(value = "password", required = false) String password,
+                                  HttpServletRequest request) {
         logger.info("============用户登录 login 方法调用开始==============");
         String msgTip = "";
-        User user=null;
+        User user = null;
         BaseResponseInfo res = new BaseResponseInfo();
         try {
             String username = loginame.trim();
@@ -90,32 +88,30 @@ public class UserController {
                     break;
                 default:
                     try {
-                        //验证通过 ，可以登录，放入session，记录登录日志
                         user = userService.getUserByUserName(username);
-    //                    logService.create(new Logdetails(user, "登录系统", model.getClientIp(),
-    //                            new Timestamp(System.currentTimeMillis()), (short) 0, "管理用户：" + username + " 登录系统", username + " 登录系统"));
                         msgTip = "user can login";
-                        request.getSession().setAttribute("user",user);
-                        request.getSession().setAttribute("tenantId",1L); //租户id
-                        request.getSession().setAttribute("mybatisPlusStatus",mybatisPlusStatus); //开启状态
+                        request.getSession().setAttribute("user", user);
+                        request.getSession().setAttribute("tenantId", 1L);
+                        request.getSession().setAttribute("mybatisPlusStatus", mybatisPlusStatus);
                     } catch (Exception e) {
                         logger.error(">>>>>>>>>>>>>>>查询用户名为:" + username + " ，用户信息异常", e);
                     }
                     break;
             }
-            Map<String, Object> data = new HashMap<String, Object>();
+            Map<String, Object> data = new HashMap<String, Object>(2);
             data.put("msgTip", msgTip);
+
             /**
              * 在IE模式下，无法获取到user数据，
              * 在此处明确添加上user信息
-             * */
-            if(user!=null){
-                data.put("user",user);
+             */
+            if (user != null) {
+                data.put("user", user);
             }
             res.code = 200;
             res.data = data;
             logger.info("===============用户登录 login 方法调用结束===============");
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             res.code = 500;
             res.data = "用户登录失败";
@@ -127,16 +123,16 @@ public class UserController {
     public BaseResponseInfo getSessionUser(HttpServletRequest request) {
         BaseResponseInfo res = new BaseResponseInfo();
         try {
-            Map<String, Object> data = new HashMap<String, Object>();
+            Map<String, Object> data = new HashMap<String, Object>(2);
             Object userInfo = request.getSession().getAttribute("user");
-            if(userInfo!=null) {
+            if (userInfo != null) {
                 User user = (User) userInfo;
                 user.setPassword(null);
                 data.put("user", user);
             }
             res.code = 200;
             res.data = data;
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             res.code = 500;
             res.data = "获取session失败";
@@ -150,7 +146,7 @@ public class UserController {
         try {
             request.getSession().removeAttribute("user");
             response.sendRedirect("/login.html");
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             res.code = 500;
             res.data = "退出失败";
@@ -159,13 +155,12 @@ public class UserController {
     }
 
     @PostMapping(value = "/resetPwd")
-    public String resetPwd(@RequestParam("id") Long id,
-                                     HttpServletRequest request) throws NoSuchAlgorithmException {
-        Map<String, Object> objectMap = new HashMap<String, Object>();
+    public String resetPwd(@RequestParam("id") Long id) throws NoSuchAlgorithmException {
+        Map<String, Object> objectMap = new HashMap<String, Object>(2);
         String password = "123456";
         String md5Pwd = Tools.md5Encryp(password);
         int update = userService.resetPwd(md5Pwd, id);
-        if(update > 0) {
+        if (update > 0) {
             return returnJson(objectMap, message, ErpInfo.OK.code);
         } else {
             return returnJson(objectMap, message, ErpInfo.ERROR.code);
@@ -182,7 +177,7 @@ public class UserController {
             String oldPassword = Tools.md5Encryp(oldpwd);
             String md5Pwd = Tools.md5Encryp(password);
             //必须和原始密码一致才可以更新密码
-            if(user.getLoginame().equals("jsh")){
+            if (user.getLoginame().equals("jsh")) {
                 flag = 3; //管理员jsh不能修改密码
             } else if (oldPassword.equalsIgnoreCase(user.getPassword())) {
                 user.setPassword(md5Pwd);
@@ -191,7 +186,7 @@ public class UserController {
                 flag = 2; //原始密码输入错误
             }
             objectMap.put("status", flag);
-            if(flag > 0) {
+            if (flag > 0) {
                 return returnJson(objectMap, message, ErpInfo.OK.code);
             } else {
                 return returnJson(objectMap, message, ErpInfo.ERROR.code);
@@ -206,6 +201,7 @@ public class UserController {
 
     /**
      * 获取全部用户数据列表
+     *
      * @param request
      * @return
      */
@@ -215,39 +211,41 @@ public class UserController {
         try {
             Map<String, Object> data = new HashMap<String, Object>();
             List<User> dataList = userService.getUser();
-            if(dataList!=null) {
+            if (dataList != null) {
                 data.put("userList", dataList);
             }
             res.code = 200;
             res.data = data;
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             res.code = 500;
             res.data = "获取失败";
         }
         return res;
     }
+
     /**
      * create by: cjl
      * description:
-     *  查询分页用户列表
+     * 查询分页用户列表
      * create time: 2019/3/8 15:08
-     * @Param: pageSize
-     * @Param: currentPage
-     * @Param: search
+     *
      * @return java.lang.String
+     * @Param: pageSize
+     * @Param: currentPage
+     * @Param: search
      */
     @GetMapping(value = "/getUserList")
     public String getUserList(@RequestParam(value = Constants.PAGE_SIZE, required = false) Integer pageSize,
-                                       @RequestParam(value = Constants.CURRENT_PAGE, required = false) Integer currentPage,
-                                       @RequestParam(value = Constants.SEARCH, required = false) String search)throws Exception {
+                              @RequestParam(value = Constants.CURRENT_PAGE, required = false) Integer currentPage,
+                              @RequestParam(value = Constants.SEARCH, required = false) String search) throws Exception {
 
         Map<String, Object> parameterMap = new HashMap<String, Object>();
         //查询参数
-        JSONObject obj= JSON.parseObject(search);
-        Set<String> key= obj.keySet();
-        for(String keyEach: key){
-            parameterMap.put(keyEach,obj.getString(keyEach));
+        JSONObject obj = JSON.parseObject(search);
+        Set<String> key = obj.keySet();
+        for (String keyEach : key) {
+            parameterMap.put(keyEach, obj.getString(keyEach));
         }
         PageQueryInfo queryInfo = new PageQueryInfo();
         Map<String, Object> objectMap = new HashMap<String, Object>();
@@ -257,7 +255,7 @@ public class UserController {
         if (currentPage == null || currentPage <= 0) {
             currentPage = BusinessConstants.DEFAULT_PAGINATION_PAGE_NUMBER;
         }
-        PageHelper.startPage(currentPage,pageSize,true);
+        PageHelper.startPage(currentPage, pageSize, true);
         List<UserEx> list = userService.getUserList(parameterMap);
         //获取分页查询后的数据
         PageInfo<UserEx> pageInfo = new PageInfo<>(list);
@@ -275,61 +273,67 @@ public class UserController {
     /**
      * create by: cjl
      * description:
-     *  新增用户及机构和用户关系
+     * 新增用户及机构和用户关系
      * create time: 2019/3/8 16:06
-     * @Param: beanJson
+     *
      * @return java.lang.Object
+     * @Param: beanJson
      */
     @PostMapping("/addUser")
     @ResponseBody
-    public Object addUser(@RequestParam("info") String beanJson)throws Exception{
+    public Object addUser(@RequestParam("info") String beanJson) throws Exception {
 
         JSONObject result = ExceptionConstants.standardSuccess();
-        UserEx ue= JSON.parseObject(beanJson, UserEx.class);
+        UserEx ue = JSON.parseObject(beanJson, UserEx.class);
         userService.addUserAndOrgUserRel(ue);
         return result;
 
     }
+
     /**
      * create by: cjl
      * description:
-     *  修改用户及机构和用户关系
+     * 修改用户及机构和用户关系
      * create time: 2019/3/8 16:06
-     * @Param: beanJson
+     *
      * @return java.lang.Object
+     * @Param: beanJson
      */
     @PostMapping("/updateUser")
     @ResponseBody
-    public Object updateUser(@RequestParam("info") String beanJson,@RequestParam("id") Long id)throws Exception{
+    public Object updateUser(@RequestParam("info") String beanJson, @RequestParam("id") Long id) throws Exception {
         JSONObject result = ExceptionConstants.standardSuccess();
-        UserEx ue= JSON.parseObject(beanJson, UserEx.class);
+        UserEx ue = JSON.parseObject(beanJson, UserEx.class);
         ue.setId(id);
         userService.updateUserAndOrgUserRel(ue);
         return result;
     }
+
     @PostMapping("/deleteUser")
     @ResponseBody
-    public Object deleteUser(@RequestParam("ids") String ids)throws Exception{
+    public Object deleteUser(@RequestParam("ids") String ids) throws Exception {
         JSONObject result = ExceptionConstants.standardSuccess();
         userService.batDeleteUser(ids);
         return result;
     }
+
     @PostMapping("/batchDeleteUser")
     @ResponseBody
-    public Object batchDeleteUser(@RequestParam("ids") String ids)throws Exception{
+    public Object batchDeleteUser(@RequestParam("ids") String ids) throws Exception {
         JSONObject result = ExceptionConstants.standardSuccess();
         userService.batDeleteUser(ids);
         return result;
     }
+
     @RequestMapping("/getOrganizationUserTree")
-    public JSONArray getOrganizationUserTree()throws Exception{
-        JSONArray arr=new JSONArray();
-        List<TreeNodeEx> organizationUserTree= userService.getOrganizationUserTree();
-        if(organizationUserTree!=null&&organizationUserTree.size()>0){
-            for(TreeNodeEx node:organizationUserTree){
-                String str=JSON.toJSONString(node);
-                JSONObject obj=JSON.parseObject(str);
-                arr.add(obj) ;
+    public JSONArray getOrganizationUserTree() throws Exception {
+        JSONArray arr = new JSONArray();
+        List<TreeNodeEx> organizationUserTree = userService.getOrganizationUserTree();
+        if (organizationUserTree != null && organizationUserTree.size() > 0) {
+            for (TreeNodeEx node : organizationUserTree) {
+                String str = JSON.toJSONString(node);
+                JSONObject obj = JSON.parseObject(str);
+                arr.add(obj);
             }
         }
         return arr;
