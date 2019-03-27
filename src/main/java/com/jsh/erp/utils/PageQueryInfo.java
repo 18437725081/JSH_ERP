@@ -12,6 +12,13 @@ import java.util.List;
 @Data
 public class PageQueryInfo {
 
+    /**
+     * 总条数
+     */
     private Long total;
+
+    /**
+     * 记录总数
+     */
     private List<?> rows;
 }

@@ -19,8 +19,6 @@ import com.jsh.erp.service.serialNumber.SerialNumberService;
 import com.jsh.erp.service.supplier.SupplierService;
 import com.jsh.erp.service.user.UserService;
 import com.jsh.erp.utils.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -38,7 +36,6 @@ import static com.jsh.erp.utils.Tools.getCenternTime;
 
 @Service
 public class DepotHeadService {
-    private Logger logger = LoggerFactory.getLogger(DepotHeadService.class);
 
     @Resource
     private DepotHeadMapper depotHeadMapper;
@@ -72,18 +69,18 @@ public class DepotHeadService {
         List<DepotHeadVo4List> list = depotHeadMapperEx.selectByConditionDepotHead(type, subType, number, beginTime, endTime, dhIds, offset, rows);
         if (null != list) {
             for (DepotHeadVo4List dh : list) {
-                if(dh.getOthermoneylist() != null) {
+                if (dh.getOthermoneylist() != null) {
                     String otherMoneyListStr = dh.getOthermoneylist().replace("[", "").replace("]", "").replaceAll("\"", "");
                     dh.setOthermoneylist(otherMoneyListStr);
                 }
-                if(dh.getOthermoneyitem() != null) {
+                if (dh.getOthermoneyitem() != null) {
                     String otherMoneyItemStr = dh.getOthermoneyitem().replace("[", "").replace("]", "").replaceAll("\"", "");
                     dh.setOthermoneyitem(otherMoneyItemStr);
                 }
-                if(dh.getChangeamount() != null) {
+                if (dh.getChangeamount() != null) {
                     dh.setChangeamount(dh.getChangeamount().abs());
                 }
-                if(dh.getTotalprice() != null) {
+                if (dh.getTotalprice() != null) {
                     dh.setTotalprice(dh.getTotalprice().abs());
                 }
                 dh.setOpertimeStr(getCenternTime(dh.getOpertime()));
@@ -93,7 +90,6 @@ public class DepotHeadService {
         }
         return resList;
     }
-
 
 
     public Long countDepotHead(String type, String subType, String number, String beginTime, String endTime, String dhIds) {
@@ -158,22 +154,23 @@ public class DepotHeadService {
         example.createCriteria().andIdIn(ids);
         return depotHeadMapper.updateByExampleSelective(depotHead, example);
     }
+
     /**
      * 创建一个唯一的序列号
-     * */
-    public  String buildOnlyNumber(){
-        Long buildOnlyNumber=null;
-        synchronized (this){
-            buildOnlyNumber= depotHeadMapperEx.getBuildOnlyNumber(BusinessConstants.DEPOT_NUMBER_SEQ);
+     */
+    public String buildOnlyNumber() {
+        Long buildOnlyNumber = null;
+        synchronized (this) {
+            buildOnlyNumber = depotHeadMapperEx.getBuildOnlyNumber(BusinessConstants.DEPOT_NUMBER_SEQ);
         }
-        if(buildOnlyNumber<BusinessConstants.SEQ_TO_STRING_MIN_LENGTH){
-           StringBuffer sb=new StringBuffer(buildOnlyNumber.toString());
-           int len=BusinessConstants.SEQ_TO_STRING_MIN_LENGTH.toString().length()-sb.length();
-            for(int i=0;i<len;i++){
-                sb.insert(0,BusinessConstants.SEQ_TO_STRING_LESS_INSERT);
+        if (buildOnlyNumber < BusinessConstants.SEQ_TO_STRING_MIN_LENGTH) {
+            StringBuffer sb = new StringBuffer(buildOnlyNumber.toString());
+            int len = BusinessConstants.SEQ_TO_STRING_MIN_LENGTH.toString().length() - sb.length();
+            for (int i = 0; i < len; i++) {
+                sb.insert(0, BusinessConstants.SEQ_TO_STRING_LESS_INSERT);
             }
             return sb.toString();
-        }else{
+        } else {
             return buildOnlyNumber.toString();
         }
     }
@@ -242,18 +239,18 @@ public class DepotHeadService {
         List<DepotHeadVo4List> list = depotHeadMapperEx.getDetailByNumber(number);
         if (null != list) {
             for (DepotHeadVo4List dh : list) {
-                if(dh.getOthermoneylist() != null) {
+                if (dh.getOthermoneylist() != null) {
                     String otherMoneyListStr = dh.getOthermoneylist().replace("[", "").replace("]", "").replaceAll("\"", "");
                     dh.setOthermoneylist(otherMoneyListStr);
                 }
-                if(dh.getOthermoneyitem() != null) {
+                if (dh.getOthermoneyitem() != null) {
                     String otherMoneyItemStr = dh.getOthermoneyitem().replace("[", "").replace("]", "").replaceAll("\"", "");
                     dh.setOthermoneyitem(otherMoneyItemStr);
                 }
-                if(dh.getChangeamount() != null) {
+                if (dh.getChangeamount() != null) {
                     dh.setChangeamount(dh.getChangeamount().abs());
                 }
-                if(dh.getTotalprice() != null) {
+                if (dh.getTotalprice() != null) {
                     dh.setTotalprice(dh.getTotalprice().abs());
                 }
                 dh.setOpertimeStr(getCenternTime(dh.getOpertime()));
@@ -267,13 +264,14 @@ public class DepotHeadService {
     /**
      * create by: cjl
      * description:
-     *  新增单据主表及单据子表信息
+     * 新增单据主表及单据子表信息
      * create time: 2019/1/25 14:36
-     * @Param: beanJson
-     * @Param: inserted
-     * @Param: deleted
-     * @Param: updated
+     *
      * @return java.lang.String
+     * @Param: beanJson
+     * @Param: inserted
+     * @Param: deleted
+     * @Param: updated
      */
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public void addDepotHeadAndDetail(String beanJson, String inserted, String deleted, String updated) throws Exception {
@@ -283,21 +281,21 @@ public class DepotHeadService {
         /**处理单据主表数据*/
         DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
         //判断用户是否已经登录过，登录过不再处理
-        User userInfo=userService.getCurrentUser();
-        depotHead.setOperpersonname(userInfo==null?null:userInfo.getUsername());
+        User userInfo = userService.getCurrentUser();
+        depotHead.setOperpersonname(userInfo == null ? null : userInfo.getUsername());
         depotHead.setCreatetime(new Timestamp(System.currentTimeMillis()));
         depotHead.setStatus(BusinessConstants.BILLS_STATUS_UN_AUDIT);
         depotHeadMapperEx.adddepotHead(depotHead);
         /**入库和出库处理预付款信息*/
-        if(BusinessConstants.PAY_TYPE_PREPAID.equals(depotHead.getPaytype())){
-            if(depotHead.getOrganid()!=null) {
+        if (BusinessConstants.PAY_TYPE_PREPAID.equals(depotHead.getPaytype())) {
+            if (depotHead.getOrganid() != null) {
                 supplierService.updateAdvanceIn(depotHead.getOrganid(), BigDecimal.ZERO.subtract(depotHead.getTotalprice()));
             }
         }
         /**入库和出库处理单据子表信息*/
-        depotItemService.saveDetials(inserted,deleted,updated,depotHead.getId());
+        depotItemService.saveDetials(inserted, deleted, updated, depotHead.getId());
         /**如果关联单据号非空则更新订单的状态为2 */
-        if(depotHead.getLinknumber()!=null) {
+        if (depotHead.getLinknumber() != null) {
             DepotHead depotHeadOrders = new DepotHead();
             depotHeadOrders.setStatus(BusinessConstants.BILLS_STATUS_SKIP);
             DepotHeadExample example = new DepotHeadExample();
@@ -305,21 +303,23 @@ public class DepotHeadService {
             depotHeadMapper.updateByExampleSelective(depotHeadOrders, example);
         }
     }
+
     /**
      * create by: cjl
      * description:
      * 更新单据主表及单据子表信息
      * create time: 2019/1/28 14:47
-     * @Param: id
-     * @Param: beanJson
-     * @Param: inserted
-     * @Param: deleted
-     * @Param: updated
-     * @Param: preTotalPrice
+     *
      * @return java.lang.Object
+     * @Param: id
+     * @Param: beanJson
+     * @Param: inserted
+     * @Param: deleted
+     * @Param: updated
+     * @Param: preTotalPrice
      */
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public void updateDepotHeadAndDetail(Long id, String beanJson, String inserted, String deleted, String updated, BigDecimal preTotalPrice)throws Exception {
+    public void updateDepotHeadAndDetail(Long id, String beanJson, String inserted, String deleted, String updated, BigDecimal preTotalPrice) throws Exception {
         logService.insertLog(BusinessConstants.LOG_INTERFACE_NAME_DEPOT_HEAD,
                 new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_EDIT).append(id).toString(),
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
@@ -327,27 +327,28 @@ public class DepotHeadService {
         DepotHead depotHead = JSONObject.parseObject(beanJson, DepotHead.class);
         //判断用户是否已经登录过，登录过不再处理
         depotHead.setId(id);
-        User userInfo=userService.getCurrentUser();
-        depotHead.setOperpersonname(userInfo==null?null:userInfo.getUsername());
+        User userInfo = userService.getCurrentUser();
+        depotHead.setOperpersonname(userInfo == null ? null : userInfo.getUsername());
         depotHead.setOpertime(new Timestamp(System.currentTimeMillis()));
         depotHeadMapperEx.updatedepotHead(depotHead);
         /**入库和出库处理预付款信息*/
-        if(BusinessConstants.PAY_TYPE_PREPAID.equals(depotHead.getPaytype())){
-            if(depotHead.getOrganid()!=null){
+        if (BusinessConstants.PAY_TYPE_PREPAID.equals(depotHead.getPaytype())) {
+            if (depotHead.getOrganid() != null) {
                 supplierService.updateAdvanceIn(depotHead.getOrganid(), BigDecimal.ZERO.subtract(depotHead.getTotalprice().subtract(preTotalPrice)));
             }
         }
         /**入库和出库处理单据子表信息*/
-        depotItemService.saveDetials(inserted,deleted,updated,depotHead.getId());
+        depotItemService.saveDetials(inserted, deleted, updated, depotHead.getId());
     }
 
     /**
      * create by: cjl
      * description:
-     *  删除单据主表及子表信息
+     * 删除单据主表及子表信息
      * create time: 2019/1/28 17:29
-     * @Param: id
+     *
      * @return java.lang.Object
+     * @Param: id
      */
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public void deleteDepotHeadAndDetail(Long id) throws Exception {
@@ -355,42 +356,44 @@ public class DepotHeadService {
                 new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_DELETE).append(id).toString(),
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
         //查询单据主表信息
-        DepotHead depotHead =getDepotHead(id);
-        User userInfo=userService.getCurrentUser();
+        DepotHead depotHead = getDepotHead(id);
+        User userInfo = userService.getCurrentUser();
         //删除出库数据回收序列号
-        if(BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())
-                &&!BusinessConstants.SUB_TYPE_TRANSFER.equals(depotHead.getSubtype())){
+        if (BusinessConstants.DEPOTHEAD_TYPE_OUT.equals(depotHead.getType())
+                && !BusinessConstants.SUB_TYPE_TRANSFER.equals(depotHead.getSubtype())) {
             //查询单据子表列表
-            List<DepotItem> depotItemList = depotItemMapperEx.findDepotItemListBydepotheadId(id,BusinessConstants.ENABLE_SERIAL_NUMBER_ENABLED);
+            List<DepotItem> depotItemList = depotItemMapperEx.findDepotItemListBydepotheadId(id, BusinessConstants.ENABLE_SERIAL_NUMBER_ENABLED);
             /**回收序列号*/
-            if(depotItemList!=null&&depotItemList.size()>0){
-                for(DepotItem depotItem:depotItemList){
+            if (depotItemList != null && depotItemList.size() > 0) {
+                for (DepotItem depotItem : depotItemList) {
                     //BasicNumber=OperNumber*ratio
-                    serialNumberService.cancelSerialNumber(depotItem.getMaterialid(), depotItem.getHeaderid(),depotItem.getBasicnumber().intValue(),userInfo);
+                    serialNumberService.cancelSerialNumber(depotItem.getMaterialid(), depotItem.getHeaderid(), depotItem.getBasicnumber().intValue(), userInfo);
                 }
             }
         }
         /**删除单据子表数据*/
-        depotItemMapperEx.deleteDepotItemByDepotHeadIds(new Long []{id});
+        depotItemMapperEx.deleteDepotItemByDepotHeadIds(new Long[]{id});
         /**删除单据主表信息*/
         deleteDepotHead(id);
     }
+
     /**
      * create by: cjl
      * description:
-     *  批量删除单据主表及子表信息
+     * 批量删除单据主表及子表信息
      * create time: 2019/1/28 17:29
-     * @Param: id
+     *
      * @return java.lang.Object
+     * @Param: id
      */
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public void batchDeleteDepotHeadAndDetail(String ids) throws Exception{
+    public void batchDeleteDepotHeadAndDetail(String ids) throws Exception {
         logService.insertLog(BusinessConstants.LOG_INTERFACE_NAME_DEPOT_HEAD,
                 new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_DELETE).append(ids).toString(),
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
-        if(StringUtil.isNotEmpty(ids)){
-            String [] headIds=ids.split(",");
-            for(int i=0;i<headIds.length;i++){
+        if (StringUtil.isNotEmpty(ids)) {
+            String[] headIds = ids.split(",");
+            for (int i = 0; i < headIds.length; i++) {
                 deleteDepotHeadAndDetail(new Long(headIds[i]));
             }
         }

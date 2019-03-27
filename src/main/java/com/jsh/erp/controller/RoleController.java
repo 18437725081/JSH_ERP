@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
- * @author ji sheng hua 华夏ERP
+ * @author 暗香
  */
 @RestController
 @RequestMapping(value = "/role")

@@ -24,10 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
- * create by: cjl
- * description:
- *
- * create time: 2019/3/6 10:54
+ * @author  暗香
  */
 @RestController
 @RequestMapping(value = "/organization")

@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * @author ji-sheng-hua  华夏ERP
+ * @author 暗香
  */
 @RestController
 @RequestMapping(value = "/functions")
@@ -26,18 +26,25 @@ public class FunctionsController {
 
     @Resource
     private FunctionsService functionsService;
-
     @Resource
     private UserBusinessService userBusinessService;
 
+    /**
+     * 初始化系统菜单
+     * @param pNumber
+     * @param hasFunctions
+     * @param request
+     * @return
+     */
     @PostMapping(value = "/findMenu")
-    public JSONArray findMenu(@RequestParam(value="pNumber") String pNumber,
-                            @RequestParam(value="hasFunctions") String hasFunctions,
-                            HttpServletRequest request) {
+    public JSONArray findMenu(@RequestParam(value = "pNumber") String pNumber,
+                              @RequestParam(value = "hasFunctions") String hasFunctions,
+                              HttpServletRequest request) {
         //存放数据json数组
         JSONArray dataArray = new JSONArray();
         try {
-            String fc = hasFunctions; //当前用户所拥有的功能列表，格式如：[1][2][5]
+            //当前用户所拥有的功能列表，格式如：[1][2][5]
+            String fc = hasFunctions;
             List<Functions> dataList = functionsService.getRoleFunctions(pNumber);
             if (null != dataList) {
                 for (Functions functions : dataList) {
@@ -46,27 +53,27 @@ public class FunctionsController {
                     List<Functions> dataList1 = functionsService.getRoleFunctions(functions.getNumber());
                     JSONArray dataArray1 = new JSONArray();
                     if (dataList1.size() != 0) {
-                        item.put("text", functions.getName()); //是目录就没链接
+                        item.put("text", functions.getName());
                         for (Functions functions1 : dataList1) {
-                            item.put("state", "open");   //如果不为空，节点展开
+                            item.put("state", "open");
                             JSONObject item1 = new JSONObject();
                             List<Functions> dataList2 = functionsService.getRoleFunctions(functions1.getNumber());
                             if (fc.indexOf("[" + functions1.getId().toString() + "]") != -1 || dataList2.size() != 0) {
                                 item1.put("id", functions1.getId());
                                 JSONArray dataArray2 = new JSONArray();
                                 if (dataList2.size() != 0) {
-                                    item1.put("text", functions1.getName());//是目录就没链接
+                                    item1.put("text", functions1.getName());
                                     for (Functions functions2 : dataList2) {
-                                        item1.put("state", "closed");   //如果不为空，节点不展开
+                                        item1.put("state", "closed");
                                         JSONObject item2 = new JSONObject();
                                         List<Functions> dataList3 = functionsService.getRoleFunctions(functions2.getNumber());
                                         if (fc.indexOf("[" + functions2.getId().toString() + "]") != -1 || dataList3.size() != 0) {
                                             item2.put("id", functions2.getId());
                                             JSONArray dataArray3 = new JSONArray();
                                             if (dataList3.size() != 0) {
-                                                item2.put("text", functions2.getName());//是目录就没链接
+                                                item2.put("text", functions2.getName());
                                                 for (Functions functions3 : dataList3) {
-                                                    item2.put("state", "closed");   //如果不为空，节点不展开
+                                                    item2.put("state", "closed");
                                                     JSONObject item3 = new JSONObject();
                                                     item3.put("id", functions3.getId());
                                                     item3.put("text", functions3.getName());
@@ -111,12 +118,13 @@ public class FunctionsController {
 
     /**
      * 角色对应功能显示
+     *
      * @param request
      * @return
      */
     @PostMapping(value = "/findRoleFunctions")
     public JSONArray findRoleFunctions(@RequestParam("UBType") String type, @RequestParam("UBKeyId") String keyId,
-                                 HttpServletRequest request) {
+                                       HttpServletRequest request) {
         JSONArray arr = new JSONArray();
         try {
             List<Functions> dataList = functionsService.findRoleFunctions("0");
@@ -239,6 +247,7 @@ public class FunctionsController {
 
     /**
      * 根据id列表查找功能信息
+     *
      * @param functionsIds
      * @param request
      * @return

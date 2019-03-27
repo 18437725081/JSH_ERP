@@ -16,18 +16,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author jishenghua  华夏ERP 2018年12月25日14:38:08
+ * @author 暗香
  */
 @RestController
 @RequestMapping(value = "/inOutItem")
 public class InOutItemController {
-    private Logger logger = LoggerFactory.getLogger(InOutItemController.class);
 
     @Resource
     private InOutItemService inOutItemService;
 
     /**
      * 查找收支项目信息-下拉框
+     *
      * @param request
      * @return
      */
@@ -48,7 +48,7 @@ public class InOutItemController {
                 }
             }
             res = dataArray.toJSONString();
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             res = "获取数据失败";
         }

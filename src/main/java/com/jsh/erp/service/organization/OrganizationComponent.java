@@ -12,16 +12,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Description
- *
- * @Author: cjl
- * @Date: 2019/3/6 15:09
+ * @author 暗香
  */
 @Service(value = "organization_component")
 @OrganizationResource
 public class OrganizationComponent implements ICommonQuery {
     @Resource
     private OrganizationService organizationService;
+
     @Override
     public Object selectOne(String condition) {
         return null;
@@ -31,9 +29,11 @@ public class OrganizationComponent implements ICommonQuery {
     public List<?> select(Map<String, String> parameterMap) {
         return getOrganizationList(parameterMap);
     }
+
     private List<?> getOrganizationList(Map<String, String> map) {
         return null;
     }
+
     @Override
     public Long counts(Map<String, String> parameterMap) {
         return null;
@@ -41,12 +41,12 @@ public class OrganizationComponent implements ICommonQuery {
 
     @Override
     public int insert(String beanJson, HttpServletRequest request) {
-        return organizationService.insertOrganization(beanJson,request);
+        return organizationService.insertOrganization(beanJson, request);
     }
 
     @Override
     public int update(String beanJson, Long id) {
-        return organizationService.updateOrganization(beanJson,id);
+        return organizationService.updateOrganization(beanJson, id);
     }
 
     @Override

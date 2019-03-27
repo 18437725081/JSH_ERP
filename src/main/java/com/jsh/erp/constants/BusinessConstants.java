@@ -1,11 +1,7 @@
 package com.jsh.erp.constants;
 
 /**
- * @ClassName:BusinessConstants
- * @Description 业务字典类
- * @Author qiankunpingtai
- * @Date 2019-3-6 17:58
- * @Version 1.0
+ * @author 暗香
  **/
 public class BusinessConstants {
 

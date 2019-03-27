@@ -25,7 +25,8 @@ import java.util.*;
 import static com.jsh.erp.utils.ResponseJsonUtil.returnJson;
 
 /**
- * @author ji sheng hua 752*718*920
+ * 出库管理
+ * @author 暗香
  */
 @RestController
 @RequestMapping(value = "/depot")

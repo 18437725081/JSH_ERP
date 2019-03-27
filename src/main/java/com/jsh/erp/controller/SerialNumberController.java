@@ -18,10 +18,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Description
- *
- * @Author: cjl
- * @Date: 2019/1/22 10:29
+ * @author 暗香
  */
 @RestController
 public class SerialNumberController {

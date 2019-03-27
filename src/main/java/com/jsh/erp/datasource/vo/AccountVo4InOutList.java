@@ -4,6 +4,10 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
+/**
+ * @author 暗香
+ * 账户流水信息
+ */
 @Data
 public class AccountVo4InOutList {
 

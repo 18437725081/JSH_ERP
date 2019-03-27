@@ -28,11 +28,7 @@
     //alert(pageid);
 
     var userBusinessList = null;
-    var userBusinessID = null;
-    var type = null;
     var options = "";
-    var kid = null;
-    var lei = null;
     var last = "";
     var functions = "";
     var btnStrList = []; //按钮权限列表
@@ -114,8 +110,6 @@
         }
         if (last != "") {
             last = "[" + last.substring(0, last.length - 1);
-            //alert(last);
-
             if (last.indexOf("[" + pageid + "]") != -1) {
                 //alert("存在");
                 $("#west").show();
@@ -185,7 +179,7 @@
     <div class="menu-sep">
     </div>
     <div id="mm-version">
-        华夏ERP官网
+        南工官网
     </div>
 </div>
 </body>

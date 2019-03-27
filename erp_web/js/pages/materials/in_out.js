@@ -87,13 +87,6 @@
 			organUrl = retailUrl;
 			amountNum = "LSTH";
 		}
-		else if(listTitle === "销售退货列表"){
-			listType = "入库"; 
-			listSubType = "销售退货"; 
-			payTypeTitle = "付款";
-			organUrl = cusUrl;
-			amountNum = "XSTH";
-		}
 		else if(listTitle === "其它入库列表"){
 			listType = "入库"; 
 			listSubType = "其它"; 
@@ -107,20 +100,6 @@
 			payTypeTitle = "收款";
 			organUrl = retailUrl;
 			amountNum = "LSCK";
-		}
-        else if(listTitle === "销售订单列表"){
-            listType = "其它";
-            listSubType = "销售订单";
-            payTypeTitle = "隐藏";
-            organUrl = cusUrl;
-            amountNum = "XSDD";
-        }
-		else if(listTitle === "销售出库列表"){
-			listType = "出库"; 
-			listSubType = "销售"; 
-			payTypeTitle = "收款";
-			organUrl = cusUrl;
-			amountNum = "XSCK";
 		}
 		else if(listTitle === "采购退货列表"){
 			listType = "出库"; 

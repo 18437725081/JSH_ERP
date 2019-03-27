@@ -100,14 +100,6 @@
             billType = "material";
             $("#bill .purchase_back").show();
         }
-        else if(listSubType == "销售出库") {
-            billType = "material";
-            $("#bill .sale_out").show();
-        }
-        else if(listSubType == "销售退货入库") {
-            billType = "material";
-            $("#bill .sale_back").show();
-        }
         else if(listSubType == "零售出库") {
             billType = "material";
             $("#bill .retail_out").show();
@@ -128,49 +120,6 @@
             billType = "material";
             $("#bill .allocation_out").show();
         }
-        else if(listSubType == "收入") {
-            billType = "account";
-            payTypeTitle = "收入项目";
-            itemType = false; //显示当前列
-            moneyType = true; //隐藏当前列
-            $("#bill .item_in").show();
-        }
-        else if(listSubType == "支出") {
-            billType = "account";
-            payTypeTitle = "支出项目";
-            itemType = false; //显示当前列
-            moneyType = true; //隐藏当前列
-            $("#bill .item_out").show();
-        }
-        else if(listSubType == "收款") {
-            billType = "account";
-            payTypeTitle = "无标题";
-            itemType = true; //隐藏当前列
-            moneyType = false; //显示当前列
-            $("#bill .money_in").show();
-        }
-        else if(listSubType == "付款") {
-            billType = "account";
-            payTypeTitle = "无标题";
-            itemType = true; //隐藏当前列
-            moneyType = false; //显示当前列
-            $("#bill .money_out").show();
-        }
-        else if(listSubType == "转账") {
-            billType = "account";
-            payTypeTitle = "无标题";
-            itemType = true; //隐藏当前列
-            moneyType = false; //显示当前列
-            $("#bill .giro").show();
-        }
-        else if(listSubType == "收预付款") {
-            billType = "account";
-            payTypeTitle = "无标题";
-            itemType = true; //隐藏当前列
-            moneyType = false; //显示当前列
-            $("#bill .advance_in").show();
-        }
-
         //如果是进货、销售
         if(billType == "material"){
             $.ajax({

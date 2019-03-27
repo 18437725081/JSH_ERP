@@ -61,17 +61,6 @@ public class TenantConfig {
 
         sqlParserList.add(tenantSqlParser);
         paginationInterceptor.setSqlParserList(sqlParserList);
-//        paginationInterceptor.setSqlParserFilter(new ISqlParserFilter() {
-//            @Override
-//            public boolean doFilter(MetaObject metaObject) {
-//                MappedStatement ms = PluginUtils.realTarget(metaObject);
-//                // 过滤自定义查询此时无租户信息约束出现
-//                if ("com.jsh.erp.datasource.mappers.DepotHeadMapperEx.getBuildOnlyNumber".equals(ms.getId())) {
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
         return paginationInterceptor;
     }
 
@@ -95,6 +84,4 @@ public class TenantConfig {
     public PerformanceInterceptor performanceInterceptor(){
         return new PerformanceInterceptor();
     }
-
-
 }

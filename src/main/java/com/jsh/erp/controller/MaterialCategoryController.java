@@ -23,12 +23,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
- * @author ji—sheng—hua   华夏ERP
+ * 商品
+ * @author 暗香
  */
 @RestController
 @RequestMapping(value = "/materialCategory")
 public class MaterialCategoryController {
-    private Logger logger = LoggerFactory.getLogger(MaterialCategoryController.class);
 
     @Resource
     private MaterialCategoryService materialCategoryService;
